@@ -121,6 +121,9 @@ fb17:
         stosb
         call scroll_scenery     ; Scroll scenery
         call scroll_scenery     ; Scroll scenery
+        call scroll_scenery
+        call scroll_scenery
+        call scroll_scenery
         cmp byte [0x00a0],0xb0  ; Passed a column?
         jz fb27
         cmp byte [0x00a2],0xb0  ; Passed a column?
