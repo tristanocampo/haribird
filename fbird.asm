@@ -33,18 +33,43 @@ fb21:   mov di,pipe     ; Init variables in video segment (saves big bytes)
         stosw           ; bird
 
         mov di,0x004a   ; Game title
-        mov ax,0x0f46   ; 'F' in white, good old ASCII
+
+        ; ASCII art representation of "Group 3: Haribird"
+        mov ax, 0x0f47 ; 'G' in white
         stosw
-        mov al,0x2d     ; '-'
+        mov ax, 0x0f52 ; 'R' in white
         stosw
-        mov al,0x42     ; 'B'
+        mov ax, 0x0f4f ; 'O' in white
         stosw
-        mov al,0x49     ; 'I'
+        mov ax, 0x0f55 ; 'U' in white
         stosw
-        mov al,0x52     ; 'R'
+        mov ax, 0x0f50 ; 'P' in white
         stosw
-        mov al,0x44     ; 'D'
+        mov ax, 0x0f20 ; Space in white
         stosw
+        mov ax, 0x0f33 ; '3' in white
+        stosw
+        mov ax, 0x0f3a ; ':' in white
+        stosw
+        mov ax, 0x0f20 ; Space in white
+        stosw
+        mov ax, 0x0f48 ; 'H' in white
+        stosw
+        mov ax, 0x0f41 ; 'A' in white
+        stosw
+        mov ax, 0x0f52 ; 'R' in white
+        stosw
+        mov ax, 0x0f49 ; 'I' in white
+        stosw
+        mov ax, 0x0f42 ; 'B' in white
+        stosw
+        mov ax, 0x0f49 ; 'I' in white
+        stosw
+        mov ax, 0x0f52 ; 'R' in white
+        stosw
+        mov ax, 0x0f44 ; 'D' in white
+        stosw
+        
         mov cx,80       ; Introduce 80 columns of scenery
 fb1:    push cx
         call scroll_scenery
@@ -74,21 +99,22 @@ fb12:   mov al,[bird]   ; Bird falls...
         and al,4        ; Wing movement each 4 frames
         jz fb15
         mov al,[di-160] ; Get character below
-        mov word [di-160],$0d1e ; Draw upper wing
+        mov word [di-160],$0e1e ; Draw upper wing
         add al,[di]     ; Add another character below
         shr al,1        ; Normalize
-        mov word [di],$0d14 ; Draw body
+        mov word [di],$0e14 ; Draw body
         jmp short fb16
 
 fb15:   mov al,[di]     ; Get character below
-        mov word [di],$0d1f ; Draw body
+        mov word [di], $0e1f ; Draw body with yellow color
 fb16:   add al,[di+2]   ; Get character below head
-        mov word [di+2],$0d10 ; Draw head
+        mov word [di+2], $0e10 ; Draw head with yellow color
         cmp al,0x40     ; Collision with scenery?
         jz fb19
         ;
         ; Stars and game over
         ;
+        
         mov byte [di],$2a ; '*' Asterisks to indicate crashing
         mov byte [di+2],$2a
         mov di,0x07CA   
@@ -121,12 +147,6 @@ fb17:
         stosb
         call scroll_scenery     ; Scroll scenery
         call scroll_scenery     ; Scroll scenery
-        call scroll_scenery
-        call scroll_scenery
-        call scroll_scenery
-        call scroll_scenery
-        call scroll_scenery
-        call scroll_scenery
         cmp byte [0x00a0],0xb0  ; Passed a column?
         jz fb27
         cmp byte [0x00a2],0xb0  ; Passed a column?
@@ -191,21 +211,21 @@ fb2:    mov cx,79       ; 79 columns
         ;
         ; Insert houses
         ;
-        mov word [0x0f9e],0x02df        ; Terrain
-        in al,(0x40)    ; Get "random" number
-        and al,0x70
-        jz fb5
-        mov bx,0x0408   ; House of one floor
-        mov [0x0efe],bx
-        mov di,0x0e5e
-        and al,0x20     ; Check "random" number
-        jz fb3
-        mov [di],bx     ; House of two floors
-        sub di,0x00a0
-fb3:    mov word [di],0x091e ; Add roof
-        ;
-        ; Check if it's time to insert a column
-        ;
+;         mov word [0x0f9e],0x02df        ; Terrain
+;         in al,(0x40)    ; Get "random" number
+;         and al,0x70
+;         jz fb5
+;         mov bx,0x0408   ; House of one floor
+;         mov [0x0efe],bx
+;         mov di,0x0e5e
+;         and al,0x20     ; Check "random" number
+;         jz fb3
+;         mov [di],bx     ; House of two floors
+;         sub di,0x00a0
+; fb3:    mov word [di],0x091e ; Add roof
+;         ;
+;         ; Check if it's time to insert a column
+;         ;
 fb5:    dec word [next] ; Decrease time (column really) for next pipe
         mov bx,[next]
         cmp bx,0x03     ; bx = 3,2,1,0 for the four columns making the pipe
@@ -247,7 +267,7 @@ fb10:   mov al,dl
         mov [pipe],ax
         mov cl,3
         shr ax,cl
-        mov ah,0x50     ; Decrease distance between pipes
+        mov ah,0x37    ; Decrease distance between pipes
         sub ah,al
         cmp ah,0x10
         ja fb11
@@ -284,4 +304,3 @@ next:   equ 0x0fa6
 bird:   equ 0x0fa8
 tall:   equ 0x0faa
 frame:  equ 0x0fac
-
