@@ -13,12 +13,242 @@
 
         use16
 
+        section .data
+        user_choice db 0  ; User choice variable
+        difficulty_times db 2, 3, 4 ; Array for difficulty (index 0 for choice 1, index 1 for choice 2, index 2 for choice 3)
+        
+        section .text
         mov ax,0x0002   ; Set 80x25 text mode
         int 0x10        ; Call BIOS
         cld             ; Reset direction flag (so stosw increments registers)
         mov ax,0xb800   ; Point to video segment
         mov ds,ax       ; Both the source (common access)
         mov es,ax       ; and target segments
+        
+ ;
+        ; Display menu
+        ;
+        mov di,0x0178   ; Start position for "GROUP 3 PRESENTS:" (row 6, column 30)
+        mov ax,0x0e47   ; 'G' in yellow
+        stosw
+        mov al,0x52     ; 'R'
+        stosw
+        mov al,0x4f     ; 'O'
+        stosw
+        mov al,0x55     ; 'U'
+        stosw
+        mov al,0x50     ; 'P'
+        stosw
+        mov al,0x20     ; ' ' (space)
+        stosw
+        mov al,0x33     ; '3'
+        stosw
+        mov al,0x20     ; ' ' (space)
+        stosw
+        mov al,0x50     ; 'P'
+        stosw
+        mov al,0x52     ; 'R'
+        stosw
+        mov al,0x45     ; 'E'
+        stosw
+        mov al,0x53     ; 'S'
+        stosw
+        mov al,0x45     ; 'E'
+        stosw
+        mov al,0x4e     ; 'N'
+        stosw
+        mov al,0x54     ; 'T'
+        stosw
+        mov al,0x53     ; 'S'
+        stosw
+        mov al,0x3a     ; ':'
+        stosw
+        mov al,0x20     ; ' ' (space)
+        stosw
+        mov ax,0x0e48   ; 'H' in yellow
+        stosw
+        mov al,0x41     ; 'A'
+        stosw
+        mov al,0x52     ; 'R'
+        stosw
+        mov al,0x42     ; 'B'
+        stosw
+        mov al,0x49     ; 'I'
+        stosw
+        mov al,0x52     ; 'R'
+        stosw
+        mov al,0x44     ; 'D'
+        stosw
+
+
+       ; add di,0x00a0*3 ; Move 3 rows down
+
+        mov di,0x0364   ; Start position for "choose difficulty" (row 10, column 32-)
+        mov ax,0x0e43   ; 'c' in yellow
+        stosw
+        mov al,0x68     ; 'h'
+        stosw
+        mov al,0x6f     ; 'o'
+        stosw
+        mov al,0x6f     ; 'o'
+        stosw
+        mov al,0x73     ; 's'
+        stosw
+        mov al,0x65     ; 'e'
+        stosw
+        mov al,0x20     ; ' ' (space)
+        stosw
+        mov al,0x64     ; 'd'
+        stosw
+        mov al,0x69     ; 'i'
+        stosw
+        mov al,0x66     ; 'f'
+        stosw
+        mov al,0x66     ; 'f'
+        stosw
+        mov al,0x69     ; 'i'
+        stosw
+        mov al,0x63     ; 'c'
+        stosw
+        mov al,0x75     ; 'u'
+        stosw
+        mov al,0x6c     ; 'l'
+        stosw
+        mov al,0x74     ; 't'
+        stosw
+        mov al,0x79     ; 'y'
+        stosw
+
+        add di,0x00a0*2 ; Move 2 rows down
+
+        mov di,0x04b0   ; Start position for "1) Easy" (row 12, column 30)
+        mov ax,0x0e31   ; '1' in yellow
+        stosw
+        mov al,0x29     ; ')'
+        stosw
+        mov al,0x20     ; ' ' (space)
+        stosw
+        mov al,0x45     ; 'E'
+        stosw
+        mov al,0x61     ; 'a'
+        stosw
+        mov al,0x73     ; 's'
+        stosw
+        mov al,0x79     ; 'y'
+        stosw
+
+        mov di,0x550   ; Start position for "2) Medium" (row 13, column 30)
+        mov ax,0x0e32   ; '2' in yellow
+        stosw
+        mov al,0x29     ; ')'
+        stosw
+        mov al,0x20     ; ' ' (space)
+        stosw
+        mov al,0x4d     ; 'M'
+        stosw
+        mov al,0x65     ; 'e'
+        stosw
+        mov al,0x64     ; 'd'
+        stosw
+        mov al,0x69     ; 'i'
+        stosw
+        mov al,0x75     ; 'u'
+        stosw
+        mov al,0x6d     ; 'm'
+        stosw
+
+        mov di,0x5f0   ; Start position for "3) Hard" (row 14, column 30)
+        mov ax,0x0e33   ; '3' in yellow
+        stosw
+        mov al,0x29     ; ')'
+        stosw
+        mov al,0x20     ; ' ' (space)
+        stosw
+        mov al,0x48     ; 'H'
+        stosw
+        mov al,0x61     ; 'a'
+        stosw
+        mov al,0x72     ; 'r'
+        stosw
+        mov al,0x64     ; 'd'
+        stosw
+        
+                ; Add a row gap
+        add di, 0x00a0     ; Move 1 row down
+
+        ; Add the text "enter your choice:"
+        mov di, 0x684    ; Start position for "enter your choice:" (row 16, column 20)
+        mov ax, 0x0e45  ; 'e' in yellow
+        stosw
+        mov al, 0x6e    ; 'n'
+        stosw
+        mov al, 0x74    ; 't'
+        stosw
+        mov al, 0x65    ; 'e'
+        stosw
+        mov al, 0x72    ; 'r'
+        stosw
+        mov al, 0x20    ; ' ' (space)
+        stosw
+        mov al, 0x79    ; 'y'
+        stosw
+        mov al, 0x6f    ; 'o'
+        stosw
+        mov al, 0x75    ; 'u'
+        stosw
+        mov al, 0x72    ; 'r'
+        stosw
+        mov al, 0x20    ; ' ' (space)
+        stosw
+        mov al, 0x63    ; 'c'
+        stosw
+        mov al, 0x68    ; 'h'
+        stosw
+        mov al, 0x6f    ; 'o'
+        stosw
+        mov al, 0x69    ; 'i'
+        stosw
+        mov al, 0x63    ; 'c'
+        stosw
+        mov al, 0x65    ; 'e'
+        stosw
+        mov al, 0x3a    ; ':'
+        stosw
+        mov al, 0x20    ; ' ' (space)
+        stosw
+
+
+        ;; ADDED FUNCTIONALITY FOR READING USER CHOICE - TRIS
+
+        ; Set DI to the position where the user input will appear
+        add di, 2        ; Move one position to the right to place the cursor after ": "
+
+        read_input:
+        mov ah, 0     ; Function 0 of int 16h: read keyboard input
+        int 0x16      ; BIOS interrupt call
+        cmp al, 0x0d  ; Check if Enter key is pressed (ASCII 0x0d)
+        je end_input  ; If Enter is pressed, jump to end_input
+        cmp al, 0x08  ; Check if Backspace key is pressed (ASCII 0x08)
+        jne not_backspace ; If not Backspace, jump to not_backspace
+        cmp di, 0x684 + 18*2  ; Check if DI is at the start of user input
+        jbe read_input ; If at the start, ignore Backspace
+        sub di, 2      ; Move DI back one character
+        mov al, ' '    ; Space character
+        stosw         ; Replace character with space
+        sub di, 2      ; Move DI back one character again
+        jmp read_input ; Continue reading input
+        not_backspace:
+        stosw         ; Store the character
+        jmp read_input ; Continue reading input
+
+        end_input:
+        ; User's input is now stored on the screen and can be processed
+        ; (Optionally store the user's input in a buffer for further processing)
+        mov [user_choice], al  ; Store the user's input in the variable user_choice
+                ; BIOS interrupt call
+
+        ;; END NUNG FUNCTIONALITY FOR CAPTURING USER CHOICE OF DIFFICULTY - TRIS
+
         ;
         ; Game restart
         ;
@@ -35,39 +265,39 @@ fb21:   mov di,pipe     ; Init variables in video segment (saves big bytes)
         mov di,0x004a   ; Game title
 
         ; ASCII art representation of "Group 3: Haribird"
-        mov ax, 0x0f47 ; 'G' in white
+        mov ax, 0x0ef47 ; 'G' in white
         stosw
-        mov ax, 0x0f52 ; 'R' in white
+        mov ax, 0x0ef52 ; 'R' in white
         stosw
-        mov ax, 0x0f4f ; 'O' in white
+        mov ax, 0x0ef4f ; 'O' in white
         stosw
-        mov ax, 0x0f55 ; 'U' in white
+        mov ax, 0x0ef55 ; 'U' in white
         stosw
-        mov ax, 0x0f50 ; 'P' in white
+        mov ax, 0x0ef50 ; 'P' in white
         stosw
-        mov ax, 0x0f20 ; Space in white
+        mov ax, 0x0ef20 ; Space in white
         stosw
-        mov ax, 0x0f33 ; '3' in white
+        mov ax, 0x0ef33 ; '3' in white
         stosw
-        mov ax, 0x0f3a ; ':' in white
+        mov ax, 0x0ef3a ; ':' in white
         stosw
-        mov ax, 0x0f20 ; Space in white
+        mov ax, 0x0ef20 ; Space in white
         stosw
-        mov ax, 0x0f48 ; 'H' in white
+        mov ax, 0x0ef48 ; 'H' in white
         stosw
-        mov ax, 0x0f41 ; 'A' in white
+        mov ax, 0x0ef41 ; 'A' in white
         stosw
-        mov ax, 0x0f52 ; 'R' in white
+        mov ax, 0x0ef52 ; 'R' in white
         stosw
-        mov ax, 0x0f49 ; 'I' in white
+        mov ax, 0x0ef49 ; 'I' in white
         stosw
-        mov ax, 0x0f42 ; 'B' in white
+        mov ax, 0x0ef42 ; 'B' in white
         stosw
-        mov ax, 0x0f49 ; 'I' in white
+        mov ax, 0x0ef49 ; 'I' in white
         stosw
-        mov ax, 0x0f52 ; 'R' in white
+        mov ax, 0x0ef52 ; 'R' in white
         stosw
-        mov ax, 0x0f44 ; 'D' in white
+        mov ax, 0x0ef44 ; 'D' in white
         stosw
         
         mov cx,80       ; Introduce 80 columns of scenery
@@ -118,13 +348,13 @@ fb16:   add al,[di+2]   ; Get character below head
         mov byte [di],$2a ; '*' Asterisks to indicate crashing
         mov byte [di+2],$2a
         mov di,0x07CA   
-        mov ax,0x0f42   ; 'B' in white, good old ASCII
+        mov ax,0x0f42   ; 'O' in white, good old ASCII
         stosw
-        mov al,0x4F     ; 'O'
+        mov al,0x4F     ; 'P'
         stosw
-        mov al,0x4E     ; 'N'
+        mov al,0x4E     ; 'P'
         stosw
-        mov al,0x4B     ; 'K'
+        mov al,0x4B     ; 'S'
         stosw
         mov al,0x21     ; '!'
         stosw
